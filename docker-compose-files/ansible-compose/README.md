@@ -1,5 +1,12 @@
 ### Ansible docker_service module
 
+Start ADB/CDK with the Vagrantfile for docker.
+
+```bash
+vagrant up
+vagrant ssh
+```
+
 Since docker_service depends on docker-compose >= 1.7.0, we need to use docker-engine and docker-py versions which are not yet available in CentOS or EPEL repositories.
 
 Before we get the latest versions of docker and docker-py, let's remove the existing packages on ADB.

@@ -62,6 +62,8 @@ curl -O https://raw.githubusercontent.com/redhat-helloworld-msa/helloworld-msa/m
 
 We need to change the HOSTIP environment variable in this file to match the IP of the machine on which we are deploying the application. This IP should be accessible by the browser which will be used to access the application endpoints.
 
+We can change other environment variables too, and their names should be self explanatory. For instance, the environment variable `FRONTEND_PORT` sets the port on which the frontend service is exposed on. We have set it to `80` so we can just hit the `HOSTIP` and connect to the frontend service.
+
 Next, we export the environment variables.
 
 ```bash
@@ -98,9 +100,17 @@ A sample working ansible playbook looks like this, but feel free to modify this 
       - down
 ```
 
+We can get this file running the following command.
+
+```bash
+curl -O https://raw.githubusercontent.com/redhat-helloworld-msa/helloworld-msa/master/docker-compose-files/ansible-compose/ansible-compose.yaml
+```
+
 Bring the application up or down using the following commands:
 
 ```bash
 ansible-playbook -t up ansible-compose.yaml
 ansible-playbook -t down ansible-compose.yaml
 ```
+
+Once the application is up, we can access it by visiting `http://<HOSTIP>:<FRONTEND_PORT>`. Here, we need to replace the `HOSTIP` and `FRONTEND_PORT` by the environment variables which we had set in the `msa_env_export` file.

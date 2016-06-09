@@ -1,0 +1,19 @@
+- name: deploy docker compose artifacts
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: compose_up
+      docker_service:
+        project_src: /home/vagrant/msa/
+        project_name: MSA
+        state: present
+      tags:
+      - up
+
+    - name: compose_down
+      docker_service:
+        project_src: /home/vagrant/msa/
+        project_name: MSA
+        state: absent
+      tags:
+      - down

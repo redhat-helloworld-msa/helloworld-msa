@@ -9,6 +9,11 @@
         msg: "Target directory is not defined. Please edit vars.yml"
       when: workdir is undefined
 
+    - name: Verify oc version
+      shell: "oc version"
+      register: command_result
+      failed_when: "'oc v3.2' not in command_result.stdout" 
+
     - name: Create Workdir
       file: 
         path: "{{ workdir }}"

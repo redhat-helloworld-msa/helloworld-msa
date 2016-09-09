@@ -12,7 +12,7 @@
     - name: Verify oc version
       shell: "oc version"
       register: command_result
-      failed_when: "'oc v3.2' not in command_result.stdout"
+      failed_when: "'oc v3.2' and 'oc v1.2' not in command_result.stdout"
 
     - name: Create Workdir
       file:

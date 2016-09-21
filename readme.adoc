@@ -43,7 +43,7 @@ include::ansible.adoc[]
 
 ## (Option 2) Install each microservice individually
 
-//// 
+////
 REMOVED EAP
 include::hello.adoc[]
 ////
@@ -54,7 +54,7 @@ include::aloha.adoc[]
 
 include::ola.adoc[]
 
-//// 
+////
 REMOVED Dropwizard
 include::namaste.adoc[]
 ////
@@ -67,6 +67,8 @@ include::kubeflix.adoc[]
 
 include::zipkin.adoc[]
 
+include::hawkular-apm.adoc[]
+
 include::frontend.adoc[]
 
 include::config.adoc[]
@@ -76,4 +78,3 @@ include::deployments.adoc[]
 include::cicd.adoc[]
 
 include::troubleshooting.adoc[]
-

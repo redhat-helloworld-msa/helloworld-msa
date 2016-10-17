@@ -67,6 +67,8 @@ include::kubeflix.adoc[]
 
 include::zipkin.adoc[]
 
+include::hawkular-apm.adoc[]
+
 include::frontend.adoc[]
 
 include::config.adoc[]

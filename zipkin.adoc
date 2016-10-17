@@ -30,7 +30,7 @@ $ oc create -f http://repo1.maven.org/maven2/io/fabric8/zipkin/zipkin-starter-mi
 $ oc expose service zipkin-query
 ----
 
-#### Test the hystrix-dashboard
+#### Test the Zipkin UI
 
 Access: http://zipkin-query-helloworld-msa.rhel-cdk.10.1.2.2.xip.io/
 

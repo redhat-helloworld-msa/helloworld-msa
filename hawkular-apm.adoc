@@ -1,0 +1,62 @@
+// JBoss, Home of Professional Open Source
+// Copyright 2016, Red Hat, Inc. and/or its affiliates, and individual
+// contributors by the @authors tag. See the copyright.txt in the
+// distribution for a full listing of individual contributors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+### Deploy Hawkular APM
+
+http://www.hawkular.org/overview/index.html#_application_performance_management[Hawkular APM] can be used as a drop-in alternative to ZipKin.
+If you decide to use it instead of ZipKin, you can either change each microservice environment variable named "ZIPKIN_SERVER_URL" to
+point to the Hawkular APM server, or change the definition for the `zipkin-query` service, once the Hawkular APM server is available.
+
+image::images/hawkular-apm.png[]
+
+#### Deploy using oc CLI
+
+----
+$ git clone https://github.com/jboss-dockerfiles/hawkular-apm.git
+$ cd hawkular-apm/hawkular-apm-server
+$ oc new-build --binary --name=hawkular-apm-server
+$ oc start-build hawkular-apm-server --from-dir=. --follow
+$ oc new-app hawkular-apm-server
+$ oc expose service hawkular-apm-server
+----
+
+#### Getting the admin username and password
+
+Once the service is deployed, the admin credentials can be obtained via Browse → Deployments → hawkular-apm-server → Click on the latest deployment → Logs.
+A sample output is as follows:
+
+```
+------------------------------------
+ATTENTION ATTENTION ATTENTION ATTENTION
+We automatically created an admin user for you to access the Hawkular APM web interface:
+Username: adminQqyEF7i
+Password: KS3mmZbkdhRZ5y7oF
+------------------------------------
+```
+
+With these credentials, login to Hawkular APM via http://hawkular-apm-server-helloworld-msa.rhel-cdk.10.1.2.2.xip.io/
+
+#### Replacing the ZipKin URL for the services
+
+The recommended approach is to change the environment variable `ZIPKIN_SERVER_URL` to point to the Hawkular APM Server:
+
+```
+oc env dc/aloha       ZIPKIN_SERVER_URL="http://hawkular-apm-server:8080"
+oc env dc/api-gateway ZIPKIN_SERVER_URL="http://hawkular-apm-server:8080"
+oc env dc/bonjour     ZIPKIN_SERVER_URL="http://hawkular-apm-server:8080"
+oc env dc/hola        ZIPKIN_SERVER_URL="http://hawkular-apm-server:8080"
+oc env dc/ola         ZIPKIN_SERVER_URL="http://hawkular-apm-server:8080"
+```
+

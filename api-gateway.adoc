@@ -34,7 +34,7 @@ $ oc expose service api-gateway
 ##### (Optional) Enable Jolokia and Readiness probe
 
 ----
-$ oc env dc/aloha AB_ENABLED=jolokia; oc patch dc/api-gateway -p '{"spec":{"template":{"spec":{"containers":[{"name":"api-gateway","ports":[{"containerPort": 8778,"name":"jolokia"}]}]}}}}'
+$ oc env dc/api-gateway AB_ENABLED=jolokia; oc patch dc/api-gateway -p '{"spec":{"template":{"spec":{"containers":[{"name":"api-gateway","ports":[{"containerPort": 8778,"name":"jolokia"}]}]}}}}'
 $ oc set probe dc/api-gateway --readiness --get-url=http://:8080/health
 ----
 

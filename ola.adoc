@@ -31,7 +31,7 @@ $ oc expose service ola
 ##### (Optional) Enable Jolokia and Readiness probe
 
 ----
-$ oc env dc/aloha AB_ENABLED=jolokia; oc patch dc/ola -p '{"spec":{"template":{"spec":{"containers":[{"name":"ola","ports":[{"containerPort": 8778,"name":"jolokia"}]}]}}}}'
+$ oc env dc/ola AB_ENABLED=jolokia; oc patch dc/ola -p '{"spec":{"template":{"spec":{"containers":[{"name":"ola","ports":[{"containerPort": 8778,"name":"jolokia"}]}]}}}}'
 $ oc set probe dc/ola --readiness --get-url=http://:8080/api/health
 ----
 

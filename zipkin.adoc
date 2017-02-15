@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-### Deploy Kubernetes ZipKin
+### Deploy ZipKin
 
-https://github.com/fabric8io/kubernetes-zipkin[Kubernetes Zipkin] provides all the required resources to start the required http://zipkin.io/[ZipKin] components in http://kubernetes.io/[Kubernetes] to trace your microservices.
-
-Zipkin is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in microservice architectures.
+http://zipkin.io/[ZipKin] can also be used as the OpenTracing implementation for the examples.
+To use ZipKin for the distributed tracing, install ZipKin and set the `ENABLE_ZIPKIN` environment variable to `true` on the individual microservices.
 
 image::images/zipkin.png[]
 
@@ -25,19 +24,18 @@ image::images/zipkin.png[]
 
 Execute:
 
-----
-$ oc create -f http://repo1.maven.org/maven2/io/fabric8/zipkin/zipkin-starter-minimal/0.0.8/zipkin-starter-minimal-0.0.8-kubernetes.yml 
+```
+$ oc create -f http://repo1.maven.org/maven2/io/fabric8/zipkin/zipkin-starter-minimal/0.0.8/zipkin-starter-minimal-0.0.8-kubernetes.yml
 $ oc expose service zipkin-query
-----
+```
 
-#### Enable the ZipKin Dashboard in the Frontend
+Once ZipKin is ready, set the environment variables on each service:
 
-Execute:
-----
-$ oc env dc/frontend ENABLE_ZIPKIN=true
-----
-
-#### Test the Zipkin console
-
-Access: http://zipkin-query-helloworld-msa.rhel-cdk.10.1.2.2.xip.io/
-
+```
+oc env dc/aloha       ENABLE_ZIPKIN=true ZIPKIN_SERVER_URL='http://zipkin-query:9411'
+oc env dc/api-gateway ENABLE_ZIPKIN=true ZIPKIN_SERVER_URL='http://zipkin-query:9411'
+oc env dc/bonjour     ENABLE_ZIPKIN=true ZIPKIN_SERVER_URL='http://zipkin-query:9411'
+oc env dc/hola        ENABLE_ZIPKIN=true ZIPKIN_SERVER_URL='http://zipkin-query:9411'
+oc env dc/ola         ENABLE_ZIPKIN=true ZIPKIN_SERVER_URL='http://zipkin-query:9411'
+oc env dc/frontend    ENABLE_ZIPKIN=true
+```

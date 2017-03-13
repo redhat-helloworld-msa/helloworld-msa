@@ -36,10 +36,10 @@ This strategy is based on link:https://github.com/openshift/origin/tree/master/e
 ----
 $ cd /api-gateway
 
-$ vim src/main/java/com/redhat/developers/msa/api_gateway/ApiGatewayController.java
+$ vim src/main/java/com/redhat/developers/msa/api_gateway/CamelRestEndpoints.java
 
-# replace .map((feign) -> feign.invokeService(serverSpan))
-# by      .map((feign) -> "UPDATED - " + feign.invokeService(serverSpan))
+# replace .transform().body(List.class, list -> list)
+# by      .transform().body(List.class, list -> list.stream().map(res -> "UPDATED - " + res).collect(java.util.stream.Collectors.toList()))
 ----
 
 - Create a `"new"` version of the application using a **different name**..

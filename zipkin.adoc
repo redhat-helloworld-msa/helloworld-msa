@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-### Deploy Kubernetes ZipKin
+### Deploy Kubernetes Zipkin
 
-https://github.com/fabric8io/kubernetes-zipkin[Kubernetes Zipkin] provides all the required resources to start the required http://zipkin.io/[ZipKin] components in http://kubernetes.io/[Kubernetes] to trace your microservices.
+https://github.com/fabric8io/kubernetes-zipkin[Kubernetes Zipkin] provides all the required resources to start the required http://zipkin.io/[Zipkin] components in http://kubernetes.io/[Kubernetes] to trace your microservices.
 
 Zipkin is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in microservice architectures.
 
@@ -26,11 +26,13 @@ image::images/zipkin.png[]
 Execute:
 
 ----
-$ oc create -f http://repo1.maven.org/maven2/io/fabric8/zipkin/zipkin-starter-minimal/0.1.1/zipkin-starter-minimal-0.1.1-openshift.yml
-$ oc expose service zipkin-query
+$ oc create -f http://repo1.maven.org/maven2/io/fabric8/zipkin/zipkin-starter-minimal/0.1.9/zipkin-starter-minimal-0.1.9-openshift.yml 
+$ oc expose service zipkin --name zipkin-msa-frontend --hostname=zipkin-{{ project_name }}.{{ domain }} --port 9411
+$ oc volume dc/zipkin-mysql --add --overwrite --name=mysql-data --type=emptyDir --claim-name=mysql-data
+$ sudo iptables -F # optional, sometimes needed
 ----
 
-#### Enable the ZipKin Dashboard in the Frontend
+#### Enable the Zipkin Dashboard in the Frontend
 
 Execute:
 ----
@@ -39,5 +41,5 @@ $ oc env dc/frontend ENABLE_ZIPKIN=true
 
 #### Test the Zipkin console
 
-Access: http://zipkin-query-helloworld-msa.rhel-cdk.10.1.2.2.xip.io/
+Access: http://zipkin-helloworld-msa.rhel-cdk.10.1.2.2.xip.io/
 

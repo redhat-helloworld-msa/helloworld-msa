@@ -1,0 +1,75 @@
+version: "2"
+services:
+  hello:
+    image: surajd/hello
+    ports:
+    - "8080"
+    - "8778"
+    - "8443"
+
+  hola:
+    image: containscafeine/hola
+    ports:
+    - "8080"
+
+  aloha:
+    image: surajd/aloha
+    ports:
+    - "8080"
+    - "8778"
+
+  ola:
+    image: surajd/ola
+    ports:
+    - "8080"
+    - "8778"
+
+  namaste:
+    image: surajd/namaste
+    ports:
+    - "8080"
+    - "8778"
+
+  bonjour:
+    image: surajd/bonjour
+    ports:
+    - "8080"
+
+  api-gateway:
+    image: surajd/api-gateway
+    ports:
+    - "8080"
+    - "8778"
+
+  zipkin-mysql:
+    image: fabric8/zipkin-mysql:0.0.8
+    ports:
+    - "3306"
+
+  zipkin-query:
+    image: openzipkin/zipkin-query:1.39.3
+    ports:
+    - "9411"
+    environment:
+      - STORAGE_PORT_3306_TCP_ADDR=zipkin-mysql:3306
+      - STORAGE_TYPE=mysql
+      - TRANSPORT_TYPE=http
+
+  zipkin-query-admin:
+    image: openzipkin/zipkin-query:1.39.3
+    ports:
+    - "9901"
+    environment:
+      - STORAGE_PORT_3306_TCP_ADDR=zipkin-mysql:3306
+      - STORAGE_TYPE=mysql
+      - TRANSPORT_TYPE=http
+
+  frontend:
+    image: surajd/frontend:hystrixport
+    links:
+    - hello
+    ports:
+    - "8080"
+    environment:
+      - OS_SUBDOMAIN=centos7-adb.10.1.2.2.xip.io
+      - OS_PROJECT=helloworld-msa

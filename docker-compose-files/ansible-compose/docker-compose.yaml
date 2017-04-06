@@ -1,0 +1,151 @@
+version: "2"
+services:
+  hello:
+    image: containscafeine/hello
+    ports:
+    - "${HELLO_PORT}:8080"
+    labels:
+     - "app=hello"
+     - "hystrix.enabled=true"
+
+  hola:
+    image: containscafeine/hola
+    ports:
+    - "${HOLA_PORT}:8080"
+    labels:
+    - "app=hola"
+    - "hystrix.enabled=true"
+
+  aloha:
+    image: containscafeine/aloha
+    ports:
+    - "${ALOHA_PORT}:8080"
+    labels:
+    - "app=aloha"
+    - "hystrix.enabled=true"
+
+  ola:
+    image: containscafeine/ola
+    ports:
+    - "${OLA_PORT}:8080"
+    labels:
+    - "app=ola"
+    - "hystrix.enabled=true"
+
+  namaste:
+    image: containscafeine/namaste
+    ports:
+    - "${NAMASTE_PORT}:8080"
+    labels:
+    - "app=namaste"
+    - "hystrix.enabled=true"
+
+  bonjour:
+    image: containscafeine/bonjour
+    ports:
+    - "${BONJOUR_PORT}:8080"
+    labels:
+    - "app=bonjour"
+    - "hystrix.enabled=true"
+
+  api-gateway:
+    image: containscafeine/api-gateway
+    ports:
+    - "${API_GATEWAY_PORT}:8080"
+    labels:
+    - "app=api-gateway"
+    - "hystrix.enabled=true"
+
+  hystrix-dashboard:
+    image: fabric8/hystrix-dashboard:1.0.15
+    ports:
+    - "${HYSTRIX_DASHBOARD_PORT}:8080"
+    labels:
+    - "project=hystrix-dashboard"
+    - "provider=fabric8"
+    - "version=1.0.15"
+    - "group=io.fabric8.kubeflix"
+    - "package=kubeflix"
+
+
+  turbine-server:
+    image: fabric8/turbine-server:1.0.15
+    ports:
+    - "${TURBINE_SERVER_PORT}:8080"
+    - "8778"
+    labels:
+    - "project=turbine-server"
+    - "provider=fabric8"
+    - "version=1.0.15"
+    - "group=io.fabric8.kubeflix"
+    - "package=kubeflix"
+
+  zipkin-mysql:
+    image: fabric8/zipkin-mysql:0.0.8
+    ports:
+    - "${ZIPKIN_MYSQL_PORT}:3306"
+    labels:
+    - "project=zipkin-mysql"
+    - "provider=fabric8"
+    - "version=0.0.8"
+    - "group=io.fabric8.zipkin"
+
+  zipkin-query:
+    image: openzipkin/zipkin-query:1.39.3
+    ports:
+    - "${ZIPKIN_QUERY_PORT}:9411"
+    labels:
+    - "project=zipkin-query"
+    - "provider=fabric8"
+    - "version=0.0.8"
+    - "group=io.fabric8.zipkin"
+    environment:
+      - VIRTUAL_HOST=zipkin-query-helloworld-msa.rhel-cdk.10.1.2.2.xip.io
+      - STORAGE_PORT_9042_TCP_ADDR=zipkin-cassandra:9411
+      - STORAGE_PORT_3306_TCP_ADDR=zipkin-mysql:3306
+      - STORAGE_TYPE=mysql
+      - TRANSPORT_TYPE=http
+
+  zipkin-query-admin:
+    image: openzipkin/zipkin-query:1.39.3
+    ports:
+    - "${ZIPKIN_QUERY_ADMIN_PORT}:9901"
+    labels:
+    - "project=zipkin-query"
+    - "provider=fabric8"
+    - "version=0.0.8"
+    - "group=io.fabric8.zipkin"
+    environment:
+      - STORAGE_PORT_9042_TCP_ADDR=zipkin-cassandra:9411
+      - STORAGE_PORT_3306_TCP_ADDR=zipkin-mysql:3306
+      - STORAGE_TYPE=mysql
+      - TRANSPORT_TYPE=http
+      - VIRTUAL_HOST=zipkin-query-admin-helloworld-msa.rhel-cdk.10.1.2.2.xip.io
+  
+  frontend:
+    image: containscafeine/frontend
+    links:
+    - hello
+    - hola
+    - ola
+    - bonjour
+    - aloha
+    - namaste
+    - api-gateway
+    - zipkin-query
+    ports:
+    - "${FRONTEND_PORT}:8080"
+    labels:
+    - "app=frontend"
+    - "hystrix.enabled:true"
+    environment:
+      - HELLOURL
+      - HELLOCHAINURL
+      - HOLAURL
+      - BONJOURURL
+      - ALOHAURL
+      - OLAURL
+      - NAMASTEURL
+      - APIGATEWAYURL
+      - HYSTRIXDASHBOARDURL
+      - ZIPKINQUERYURL

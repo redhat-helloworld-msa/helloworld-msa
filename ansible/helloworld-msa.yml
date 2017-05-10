@@ -70,7 +70,7 @@
       # If Jaeger's agent is deployed after apps it can take some time to open connections.
       # Redeploy apps: oc env dc -l app JAEGER_SERVER_HOSTNAME=jaeger-all-in-one
     - name: Install Jeager
-      shell: "oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/0.1.0/all-in-one/jaeger-all-in-one-template.yml | oc create -f - && oc expose service jaeger-all-in-one --name jaeger-msa-frontend --hostname=jaeger-{{ project_name }}.{{ domain }}"
+      shell: "oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/0.1.1/all-in-one/jaeger-all-in-one-template.yml | oc create -f - && oc expose service jaeger-all-in-one --name jaeger-msa-frontend --hostname=jaeger-{{ project_name }}.{{ domain }}"
       when: "{{ deploy_jaeger }}"
       register: command_result
       failed_when: "'exists' not in command_result.stderr and command_result.rc != 0"

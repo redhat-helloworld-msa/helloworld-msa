@@ -66,6 +66,20 @@
       tags:
         - openshift
 
+      # Install Jaeger before applications, to make Jaeger's agent ready for connections.
+      # If Jaeger's agent is deployed after apps it can take some time to open connections.
+      # Redeploy apps: oc env dc -l app JAEGER_SERVER_HOSTNAME=jaeger-all-in-one
+    - name: Install Jeager
+      shell: "oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/0.1.1/all-in-one/jaeger-all-in-one-template.yml | oc create -f - && oc expose service jaeger-all-in-one --name jaeger-msa-frontend --hostname=jaeger-{{ project_name }}.{{ domain }}"
+      when: "{{ deploy_jaeger }}"
+      register: command_result
+      failed_when: "'exists' not in command_result.stderr and command_result.rc != 0"
+      changed_when: "'exists' not in command_result.stderr"
+      tags:
+        - openshift
+        - opentracing
+        - jaeger
+
     - name: Create OpenShift new-build
       shell: "oc new-build --binary --name={{ item.name }} -l app={{ item.name }}"
       register: command_result
@@ -83,7 +97,7 @@
         - build
 
     - name: Create OpenShift applications from previously created images
-      shell: "oc new-app {{ item.name }} -l app={{ item.name }}{{ (item.hystrix == True) | ternary(',hystrix.enabled=true','') }}"
+      shell: "oc new-app {{ item.name }} -l app={{ item.name }}{{ (item.hystrix == True) | ternary(',hystrix.enabled=true','') }} {{ (deploy_jaeger) | ternary('-e JAEGER_SERVER_HOSTNAME=jaeger-all-in-one','') }}"
       register: command_result
       with_items: "{{ msa_projects }}"
       failed_when: "'exists' not in command_result.stderr and command_result.rc != 0"
@@ -132,28 +146,6 @@
       tags:
         - openshift
         - hystrix
-
-    - name: Install Kubernetes Zipkin
-      shell: "oc env dc/frontend ENABLE_ZIPKIN=true; oc create -f https://raw.githubusercontent.com/redhat-helloworld-msa/zipkin/master/zipkin-starter-minimal-0.1.9-openshift.yml && oc expose service zipkin --name zipkin-frontend-msa --hostname=zipkin-{{ project_name }}.{{ domain }} --port 9411"
-      when: "{{ deploy_zipkin }}"
-      register: command_result
-      failed_when: "'exists' not in command_result.stderr and command_result.rc != 0"
-      changed_when: "'exists' not in command_result.stderr"
-      tags:
-        - openshift
-        - opentracing
-        - zipkin
-
-    - name: Install Hawkular APM
-      shell: "oc create -f https://raw.githubusercontent.com/jboss-dockerfiles/hawkular-apm/master/openshift-templates/hawkular-apm-server-deployment.yml"
-      register: command_result
-      when: "{{ deploy_hawkular_apm }}"
-      failed_when: "'exists' not in command_result.stderr and command_result.rc != 0"
-      changed_when: "'exists' not in command_result.stderr"
-      tags:
-        - openshift
-        - opentracing
-        - hawkular
 
     #Install Jenkins
     - name: Login in OpenShift as administrator

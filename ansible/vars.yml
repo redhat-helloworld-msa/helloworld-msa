@@ -28,10 +28,8 @@ clone_modules: true
 deploy_jenkins: false
 #Define if we should deploy Hystrix and Kubeflix
 deploy_hystrix: false
-#Define if we should deploy ZipKin
-deploy_zipkin: false
-#Define if we should deploy Hawkular APM
-deploy_hawkular_apm: false
+#Define if we should deploy Jaeger
+deploy_jaeger: false
 #Define if we should deploy Keycloak for SSO
 deploy_keycloak: false
 

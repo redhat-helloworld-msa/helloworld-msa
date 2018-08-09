@@ -61,6 +61,8 @@ include::jaeger.adoc[]
 
 include::sso.adoc[]
 
+include::api-management.adoc[]
+
 include::config.adoc[]
 
 include::deployments.adoc[]

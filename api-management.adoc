@@ -39,6 +39,7 @@ $ oc env bc/api-management OS_SUBDOMAIN=192.168.64.11.nip.io
 
 #### Create a custom API Management instance
 
+----
 $ oc start-build api-management --from-dir=. --follow
 $ oc new-app api-management
 $ oc expose svc/api-management --name api-bonjour

@@ -15,7 +15,7 @@
 
 ### Use API Management to take control of your microservices
 
-APIcast is an NGINX based API gateway used to integrate your internal and external API services with Red Hat 3scale API Management platform.
+APIcast (https://github.com/3scale/apicast) is an Open Source API Gateway whose main focus areas are high performance and extensibility. It is part of the Redhat 3scale API Management solution, and is used by hundreds of companies around the world to expose their APIs in a secure and controlled way.
 
 #### Create a custom API Management build
 

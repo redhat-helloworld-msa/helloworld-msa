@@ -17,6 +17,10 @@
 
 APIcast (https://github.com/3scale/apicast) is an Open Source API Gateway whose main focus areas are high performance and extensibility. It is part of the Redhat 3scale API Management solution, and is used by hundreds of companies around the world to expose their APIs in a secure and controlled way.
 
+#### Prerequistes
+
+Install and enable SSO before using this module. SSO is used to issue the JWT tokens during the OpenID Connect (http://openid.net/connect/) over OAuth 2.0 standard code flow to enable the secure connection to the gateway.
+
 #### Create a custom API Management build
 
 ----
@@ -57,11 +61,18 @@ $ oc set probe dc/api-management --readiness --get-url=http://:8081/status/ready
 #### Tell frontend to enable API Management
 
 ----
-# Using CDK3
-$ oc env dc KEYCLOAK_AUTH_SERVER_URL=http://keycloak-sso.`minishift ip`.nip.io/auth -l app
-
-# Example: OS_SUBDOMAIN=192.168.64.11.nip.io
-$ oc env dc KEYCLOAK_AUTH_SERVER_URL=http://keycloak-sso.192.168.64.11.nip.io/auth -l app
-
-$ oc env dc/api-management ENABLE_THREESCALE=true 
+$ oc env dc/frontend ENABLE_THREESCALE=true 
 ----
+
+
+#### Test the API Management Integration
+
+After enabling the API Management use case, you will see a new Tab (or two if you haven't previously enabled SSO) containing the new scenario. 
+
+* Click in the new tab and you will see a new panel with the information of your deployed services. 
+* Click the Refresh results link, if you are not logged in, you will see the services failing with an "Unauthorized" error.
+* Log in using the link in the top right corner using the user/user credentials. 
+* Click the Refresh Results link to call the managed API endpoints. You will see the same results as calling them from the browser tab.
+* Click the link again 6 more times in less than a minute.
+
+Did you notice that now the `bonjour` service failed with a HTTP 429 Too Many Requests error? The 3scale APIcast allows you to gate (secure or protect) your endopoint without the need to change or add new endpoint in your code. You can proxy your service and add policies, like enabling CORS, doing URL Rewrite or edge rate limiting with a simple configuration.

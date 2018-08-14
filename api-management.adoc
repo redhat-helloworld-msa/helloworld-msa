@@ -69,9 +69,10 @@ $ oc env dc/frontend ENABLE_THREESCALE=true
 
 After enabling the API Management use case, you will see a new Tab (or two if you haven't previously enabled SSO) containing the new scenario. 
 
-* Click in the new tab and you will see a new panel with the information of your deployed services. 
+* Click in the API Management tab and you will see a new panel with the information of your deployed services. 
 * Click the Refresh results link, if you are not logged in, you will see the services failing with an "Unauthorized" error.
 * Log in using the link in the top right corner using the user/user credentials. 
+* After the page refresh click again in the API Management tab.
 * Click the Refresh Results link to call the managed API endpoints. You will see the same results as calling them from the browser tab.
 * Click the link again 6 more times in less than a minute.
 

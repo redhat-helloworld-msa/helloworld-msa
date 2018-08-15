@@ -632,9 +632,11 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#_use_api_management_to_take_control_of_your_microservices">Use API Management to take control of your microservices</a>
 <ul class="sectlevel3">
+<li><a href="#_prerequistes">Prerequistes</a></li>
 <li><a href="#_create_a_custom_api_management_build">Create a custom API Management build</a></li>
 <li><a href="#_create_a_custom_api_management_instance">Create a custom API Management instance</a></li>
 <li><a href="#_tell_frontend_to_enable_api_management">Tell frontend to enable API Management</a></li>
+<li><a href="#_test_the_api_management_integration">Test the API Management Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -1272,7 +1274,13 @@ $ oc env dc/frontend ENABLE_SSO=true</pre>
 <div class="sect2">
 <h3 id="_use_api_management_to_take_control_of_your_microservices">Use API Management to take control of your microservices</h3>
 <div class="paragraph">
-<p>APIcast is an NGINX based API gateway used to integrate your internal and external API services with Red Hat 3scale API Management platform.</p>
+<p>APIcast (<a href="https://github.com/3scale/apicast" class="bare">https://github.com/3scale/apicast</a>) is an Open Source API Gateway whose main focus areas are high performance and extensibility. It is part of the Redhat 3scale API Management solution, and is used by hundreds of companies around the world to expose their APIs in a secure and controlled way.</p>
+</div>
+<div class="sect3">
+<h4 id="_prerequistes">Prerequistes</h4>
+<div class="paragraph">
+<p>Install and enable SSO before using this module. SSO is used to issue the JWT tokens during the OpenID Connect (<a href="http://openid.net/connect/" class="bare">http://openid.net/connect/</a>) over OAuth 2.0 standard code flow to enable the secure connection to the gateway.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_create_a_custom_api_management_build">Create a custom API Management build</h4>
@@ -1323,14 +1331,39 @@ $ oc expose svc/api-management --name api-aloha</pre>
 <h4 id="_tell_frontend_to_enable_api_management">Tell frontend to enable API Management</h4>
 <div class="listingblock">
 <div class="content">
-<pre># Using CDK3
-$ oc env dc KEYCLOAK_AUTH_SERVER_URL=http://keycloak-sso.`minishift ip`.nip.io/auth -l app
-
-# Example: OS_SUBDOMAIN=192.168.64.11.nip.io
-$ oc env dc KEYCLOAK_AUTH_SERVER_URL=http://keycloak-sso.192.168.64.11.nip.io/auth -l app
-
-$ oc env dc/api-management ENABLE_THREESCALE=true</pre>
+<pre>$ oc env dc/frontend ENABLE_THREESCALE=true</pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_test_the_api_management_integration">Test the API Management Integration</h4>
+<div class="paragraph">
+<p>After enabling the API Management use case, you will see a new Tab (or two if you haven&#8217;t previously enabled SSO) containing the new scenario.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click in the API Management tab and you will see a new panel with the information of your deployed services.</p>
+</li>
+<li>
+<p>Click the Refresh results link, if you are not logged in, you will see the services failing with an "Unauthorized" error.</p>
+</li>
+<li>
+<p>Log in using the link in the top right corner using the user/user credentials.</p>
+</li>
+<li>
+<p>After the page refresh click again in the API Management tab.</p>
+</li>
+<li>
+<p>Click the Refresh Results link to call the managed API endpoints. You will see the same results as calling them from the browser tab.</p>
+</li>
+<li>
+<p>Click the link again 6 more times in less than a minute.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Did you notice that now the <code>bonjour</code> service failed with a HTTP 429 Too Many Requests error? The 3scale APIcast allows you to gate (secure or protect) your endopoint without the need to change or add new endpoint in your code. You can proxy your service and add policies, like enabling CORS, doing URL Rewrite or edge rate limiting with a simple configuration.</p>
 </div>
 </div>
 </div>

@@ -1,5 +1,7 @@
-#To Do:
-# - Recover Console
+# - Recover Console:
+#    oc login 192.168.64.5:8443 -u admin -p admin
+#    oc project openshift-web-console
+#    TO DO
 
 minishift delete --force --clear-cache
 sudo rm -Rf ~/.minishift/
@@ -114,3 +116,6 @@ oc login -u developer -p developer
 oc new-project ci
 oc create -f https://raw.githubusercontent.com/redhat-helloworld-msa/aloha/master/pipeline.yml
 oc project helloworld-msa
+#Change aloha source code
+mvn clean package; oc start-build aloha --from-dir=. --follow
+minishift console

@@ -1,5 +1,5 @@
 #To Do:
-#  - Recover Console
+# - Recover Console
 
 minishift delete --force --clear-cache
 sudo rm -Rf ~/.minishift/
@@ -16,12 +16,13 @@ oc login `minishift ip`:8443 -u developer -p developer
 oc new-project helloworld-msa
 git clone https://github.com/redhat-helloworld-msa/hola
 cd hola/
-# Remove env setting from keycloack.json
+# Remove env setting from keycloack.json and hardcode ip OR fix to pickup env
 # Optionally convert to MicroProfile Config instead of Deltaspike
 oc new-build --binary --name=hola -l app=hola
 mvn package; oc start-build hola --from-dir=. --follow
 oc new-app hola -l app=hola,hystrix.enabled=true
 oc expose service hola
+oc set env dc KEYCLOAK_AUTH_SERVER_URL="" -l app
 oc set probe dc/hola --readiness --get-url=http://:8080/api/health
 cd ..
 git clone https://github.com/redhat-helloworld-msa/aloha
@@ -87,6 +88,7 @@ oc set env dc/keycloak OS_SUBDOMAIN=app.`minishift ip`.nip.io
 oc project helloworld-msa
 oc set env dc KEYCLOAK_AUTH_SERVER_URL=http://keycloak-sso.`minishift ip`.nip.io/auth -l app
 oc set env dc/frontend ENABLE_SSO=true
+# Set Valid Redirect URIs to * in Keycloak admin portal. 
 cd ..
 git clone https://github.com/redhat-helloworld-msa/api-management
 cd api-management/
@@ -99,4 +101,16 @@ oc expose svc/api-management --name api-hola
 oc expose svc/api-management --name api-ola
 oc expose svc/api-management --name api-aloha
 oc set probe dc/api-management --readiness --get-url=http://:8081/status/ready
-oc set env dc/frontend ENABLE_THREESCALE=trueÒ
+oc set env dc/frontend ENABLE_THREESCALE=true
+oc set env dc/hola hello="Hola de Env var"
+oc set env dc/hola hello-
+oc create configmap translation --from-file=translation.properties
+oc get configmap translation -o yaml
+oc patch dc/hola -p '{"spec":{"template":{"spec":{"containers":[{"name":"hola","volumeMounts":[{"name":"config-volume","mountPath":"/etc/config"}]}],"volumes":[{"name":"config-volume","configMap":{"name":"translation"}}]}}}}'
+oc set env dc/hola JAVA_OPTIONS="-Dconf=/etc/config/translation.properties"
+oc login -u admin -p admin
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:ci:jenkins -n ci
+oc login -u developer -p developer
+oc new-project ci
+oc create -f https://raw.githubusercontent.com/redhat-helloworld-msa/aloha/master/pipeline.yml
+oc project helloworld-msa

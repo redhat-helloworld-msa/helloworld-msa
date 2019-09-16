@@ -16,7 +16,7 @@ minishift start --vm-driver hyperkit
 eval $(minishift oc-env)
 oc login `minishift ip`:8443 -u developer -p developer
 oc new-project helloworld-msa
-git clone https://github.com/redhat-helloworld-msa/hola
+git clone https://github.com/minsys/hola
 cd hola/
 # Remove env setting from keycloack.json and hardcode ip OR fix to pickup env
 # Optionally convert to MicroProfile Config instead of Deltaspike
@@ -119,3 +119,10 @@ oc project helloworld-msa
 #Change aloha source code
 mvn clean package; oc start-build aloha --from-dir=. --follow
 minishift console
+open https://jenkins-ci.`minishift ip`.nip.io/
+open http://frontend-helloworld-msa.`minishift ip`.nip.io/
+open http://keycloak-sso.`minishift ip`.nip.io/auth/
+open http://frontend-helloworld-msa.`minishift ip`.nip.io/
+open http://jaeger-helloworld-msa.`minishift ip`.nip.io/search
+
+
